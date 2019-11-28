@@ -1,0 +1,13 @@
+targets:
+  $default:
+    builders:
+      copy_with:
+
+builders:
+  copy_with:
+    import: "package:copy_with/copy_with.dart"
+    builder_factories: ["copyWith"]
+    build_extensions: {".dart": [".copy_with.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

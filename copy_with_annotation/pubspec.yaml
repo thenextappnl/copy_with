@@ -1,0 +1,8 @@
+name: copy_with_annotation
+description: Copy with annotation
+version: 0.0.1
+author: The Next App <info@thenextapp.nl>
+homepage: https://www.thenextapp.nl
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'

@@ -2,7 +2,7 @@ name: copy_with
 description: Copy with generator
 version: 0.0.1
 author: The Next App <info@thenextapp.nl>
-homepage: https://www.thenextapp.nl
+homepage: https://github.com/thenextappnl/copy_with
 
 environment:
   sdk: '>=2.1.0 <3.0.0'

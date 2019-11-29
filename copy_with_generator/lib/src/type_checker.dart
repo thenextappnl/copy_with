@@ -27,7 +27,8 @@ class TypeChecker {
     if (this._type.element == null) {
       return false;
     }
-    return this._type.element.name == 'List' && this._type.element.library.isDartCore;
+    return this._type.element.name == 'List' &&
+        this._type.element.library.isDartCore;
   }
 
   bool get isDartDateTime {
@@ -35,15 +36,5 @@ class TypeChecker {
       return false;
     }
     return this._type.element.name == 'DateTime';
-  }
-
-  bool get isJsonSerializable {
-    return (
-        !this.isDartCoreString &&
-        !this.isDartCoreInt &&
-        !this.isDartCoreDouble &&
-        !this.isDartCoreBool &&
-        !this.isDartCoreList
-    );
   }
 }

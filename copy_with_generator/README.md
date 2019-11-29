@@ -1,14 +1,8 @@
-# copy_with_generator
+# copy_with
 
-Copy with generator
+Provides builder and generator for [copy_with_annotation](https://pub.dev/packages/copy_with_annotation)
 
-## Getting Started
+For more information how to use this package see: [copy_with_annotation](https://pub.dev/packages/copy_with_annotation)
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Author
+This CopyWith package is developed by [The Next App](https://www.thenextapp.nl). You can contact us at <info@thenextapp.nl>

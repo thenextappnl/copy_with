@@ -39,7 +39,8 @@ class TypeChecker {
   }
 
   bool get isJsonSerializable {
-    return !this._type.isDartCoreInt &&
+    return !this._type.isDartCoreString &&
+        !this._type.isDartCoreInt &&
         !this._type.isDartCoreDouble &&
         !this._type.isDartCoreBool &&
         !this._type.isDartCoreList;

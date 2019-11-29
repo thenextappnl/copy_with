@@ -1,6 +1,6 @@
 name: copy_with_annotation
 description: This package generates a copyWith method using build_runner and json_serializable packages
-version: 0.0.2+3
+version: 0.0.2+4
 author: The Next App <info@thenextapp.nl>
 homepage: https://github.com/thenextappnl/copy_with
 

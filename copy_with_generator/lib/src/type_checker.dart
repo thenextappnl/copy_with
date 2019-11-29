@@ -37,4 +37,11 @@ class TypeChecker {
     }
     return this._type.element.name == 'DateTime';
   }
+
+  bool get isJsonSerializable {
+    return !this._type.isDartCoreInt &&
+        !this._type.isDartCoreDouble &&
+        !this._type.isDartCoreBool &&
+        !this._type.isDartCoreList;
+  }
 }

@@ -19,8 +19,6 @@ class CopyWithGenerator extends GeneratorForAnnotation<CopyWith> {
     element.visitChildren(visitor);
 
     final className = visitor.className;
-    final hasJsonSerializable = _hasJsonSerializableAnnotation(element);
-
     final buffer = StringBuffer();
 
     buffer.writeln(
@@ -33,10 +31,7 @@ class CopyWithGenerator extends GeneratorForAnnotation<CopyWith> {
     buffer.writeln('  Map<String, dynamic> copy = <String, dynamic> {');
     for (var key in visitor.fields.keys) {
       final fieldType = visitor.fields[key];
-      final converterString = _getConverterString(
-        fieldType,
-        hasJsonSerializable,
-      );
+      final converterString = _getConverterString(fieldType);
 
       String expression =
           'overrides.containsKey("$key") ? overrides["$key"]${converterString} : original["$key"]';
@@ -50,34 +45,22 @@ class CopyWithGenerator extends GeneratorForAnnotation<CopyWith> {
     return buffer.toString();
   }
 
-  _getConverterString(DartType fieldType, bool hasJsonSerializable) {
+  _getConverterString(DartType fieldType) {
     final typeChecker = TypeChecker(fieldType);
 
-    if (typeChecker.isDartDateTime) {
+    if (!typeChecker.isJsonSerializable && typeChecker.isDartDateTime) {
       return '?.toIso8601String()';
     }
 
-    if (hasJsonSerializable && !typeChecker.isDartCoreList) {
-      return '?.toJson()';
-    }
-
-    if (hasJsonSerializable && typeChecker.isDartCoreList) {
+    if (!typeChecker.isJsonSerializable && typeChecker.isDartCoreList) {
       return '?.map((e) => e?.toJson())?.toList()';
     }
 
+    if (typeChecker.isJsonSerializable && !typeChecker.isDartCoreList) {
+      return '?.toJson()';
+    }
+
     return '';
-  }
-
-  _hasJsonSerializableAnnotation(ClassElement element) {
-    ElementAnnotation result = element.metadata.firstWhere((annotation) {
-      return annotation.element is ConstructorElement &&
-          annotation
-              .computeConstantValue()
-              .type
-              .name == 'JsonSerializable';
-    }, orElse: () => null);
-
-    return result != null;
   }
 }
 

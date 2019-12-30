@@ -5,10 +5,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor.dart';
 import 'package:build/build.dart';
 import 'package:copy_with_annotation/copy_with_annotation.dart';
-import 'package:source_gen/source_gen.dart'
-    show GeneratorForAnnotation, ConstantReader;
-
-import 'type_checker.dart';
+import 'package:source_gen/source_gen.dart';
 
 class CopyWithGenerator extends GeneratorForAnnotation<CopyWith> {
   @override
@@ -19,64 +16,67 @@ class CopyWithGenerator extends GeneratorForAnnotation<CopyWith> {
     element.visitChildren(visitor);
 
     final className = visitor.className;
+    final methodInput = [];
+    final constructorInput = [];
+
+    for (var key in visitor.fields.keys) {
+      FieldElement field = visitor.fields[key];
+
+      if (_ignoreFieldElement(field)) {
+        continue;
+      }
+
+      methodInput.add(
+        '    ${field.type} ${field.name},',
+      );
+
+      constructorInput.add(
+        '      ${field.name}: ${field.name} ?? this.${field.name},',
+      );
+    }
+
     final buffer = StringBuffer();
 
     buffer.writeln(
-      '$className _\$${className}CopyWith($className instance,  Map<String, dynamic> overrides) {',
+      'extension  \$${className}CopyWith on $className {'
+          '  $className copyWith({${methodInput.join("\r\n")}}) {'
+          '    return $className(${constructorInput.join("\r\n")});'
+          '  }'
+          '}',
     );
-    buffer.writeln(
-      '  Map<String, dynamic> original = _\$${className}ToJson(instance);',
-    );
-
-    buffer.writeln('  Map<String, dynamic> copy = <String, dynamic> {');
-    for (var key in visitor.fields.keys) {
-      final fieldType = visitor.fields[key];
-      final converterString = _getConverterString(fieldType);
-
-      String expression =
-          'overrides.containsKey("$key") ? overrides["$key"]${converterString} : original["$key"]';
-      buffer.writeln('  "$key": $expression,');
-    }
-
-    buffer.writeln('  };');
-    buffer.writeln('  return _\$${className}FromJson(copy);');
-    buffer.writeln('}');
 
     return buffer.toString();
   }
 
-  _getConverterString(DartType fieldType) {
-    final typeChecker = TypeChecker(fieldType);
+  bool _ignoreFieldElement(FieldElement element) {
+    final copyWithFieldAnnotation = element.metadata.firstWhere((e) {
+      final constantValue = e.computeConstantValue();
+      return TypeChecker.fromRuntime(CopyWithField)
+          .isExactlyType(constantValue.type);
+    }, orElse: () => null);
 
-    if (!typeChecker.isJsonSerializable && typeChecker.isDartDateTime) {
-      return '?.toIso8601String()';
+    if (copyWithFieldAnnotation != null) {
+      final constantValue = copyWithFieldAnnotation.computeConstantValue();
+      return constantValue.getField('ignore').toBoolValue();
     }
 
-    if (!typeChecker.isJsonSerializable && typeChecker.isDartCoreList) {
-      return '?.map((e) => e?.toJson())?.toList()';
-    }
-
-    if (typeChecker.isJsonSerializable && !typeChecker.isDartCoreList) {
-      return '?.toJson()';
-    }
-
-    return '';
+    return false;
   }
 }
 
 class _ModelVisitor extends SimpleElementVisitor {
   DartType className;
-  Map<String, DartType> fields = {};
+  Map<String, FieldElement> fields = {};
 
   @override
-  visitConstructorElement(ConstructorElement element) {
+  Object visitConstructorElement(ConstructorElement element) {
     className = element.type.returnType;
     return super.visitConstructorElement(element);
   }
 
   @override
-  visitFieldElement(FieldElement element) {
-    fields[element.name] = element.type;
+  Object visitFieldElement(FieldElement element) {
+    fields[element.name] = element;
     return super.visitFieldElement(element);
   }
 }

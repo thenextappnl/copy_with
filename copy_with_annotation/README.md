@@ -36,9 +36,11 @@ class Person {
   final String lastName;
   final DateTime dateOfBirth;
 
-  factory Person.fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
-  Map<String, dynamic> toJson() => _$PersonToJson(this);
-  Person copyWith(Map<String, dynamic> overrides) => _$PersonCopyWith(this, overrides);
+  Person({
+    this.firstName,
+    this.lastName,
+    this.dateOfBirth,
+  });
 }
 ```
 
@@ -47,38 +49,19 @@ Building creates the corresponding part person.g.dart:
 ```dart
 part of 'person.dart';
 
-Person _$PersonCopyWith(Person instance, Map<String, dynamic> overrides) {
-  Map<String, dynamic> original = _$PersonToJson(instance);
-  Map<String, dynamic> copy = <String, dynamic>{
-    "firstName": overrides.containsKey("firstName")
-        ? overrides["firstName"]?.toJson()
-        : original["firstName"],
-    "lastName": overrides.containsKey("lastName")
-        ? overrides["lastName"]?.toJson()
-        : original["lastName"],
-    "dateOfBirth": overrides.containsKey("dateOfBirth")
-        ? overrides["dateOfBirth"]?.toIso8601String()
-        : original["dateOfBirth"],
-  };
-  return _$PersonFromJson(copy);
+extension $PersonCopyWith on Person {
+  Person copyWith({
+    String firstName,
+    String lastName,
+    DateTime dateOfBirth,
+  }) {
+    return Person(
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+    );
+  }
 }
-
-Person _$PersonFromJson(Map<String, dynamic> json) {
-  return Person(
-    firstName: json['firstName'] as String,
-    lastName: json['lastName'] as String,
-    dateOfBirth: json['dateOfBirth'] == null
-        ? null
-        : DateTime.parse(json['dateOfBirth'] as String),
-  );
-}
-
-Map<String, dynamic> _$PersonToJson(Person instance) => <String, dynamic>{
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
-      'dateOfBirth': instance.dateOfBirth?.toIso8601String(),
-    };
-
 ```
 
 ## Features and bugs

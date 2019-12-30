@@ -1,7 +1,6 @@
 name: copy_with
 description: Provides builder and generator for the copy_with_annotation package
 version: 0.1.0
-author: The Next App <info@thenextapp.nl>
 homepage: https://github.com/thenextappnl/copy_with
 
 environment:

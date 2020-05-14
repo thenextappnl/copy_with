@@ -53,7 +53,11 @@ class CopyWithGenerator extends GeneratorForAnnotation<CopyWith> {
       final constantValue = e.computeConstantValue();
       return TypeChecker.fromRuntime(CopyWithField)
           .isExactlyType(constantValue.type);
-    }, orElse: () => null);
+    }, orElse: () => () => element.getter.metadata.firstWhere((e) {
+      final constantValue = e.computeConstantValue();
+      return TypeChecker.fromRuntime(CopyWithField)
+          .isExactlyType(constantValue.type);
+    }, orElse: () => null));
 
     if (copyWithFieldAnnotation != null) {
       final constantValue = copyWithFieldAnnotation.computeConstantValue();

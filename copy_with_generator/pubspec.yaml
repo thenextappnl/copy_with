@@ -1,13 +1,13 @@
 name: copy_with
 description: Provides builder and generator for the copy_with_annotation package
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/thenextappnl/copy_with
 
 environment:
   sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
-  build: '>=1.1.0 <1.3.0'
+  build: '>=1.3.0 <1.4.0'
   source_gen: '>=0.8.3 <0.9.5'
   analyzer: '>=0.36.0 <0.40.0'
   copy_with_annotation: '^0.1.0'
